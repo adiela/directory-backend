@@ -39,8 +39,10 @@ INSTALLED_APPS = [
     # project apps
     'api.main',
     'api.authentication',
+    'api.listings',
     # third party apps
     'rest_framework',
+    'phonenumber_field',
 ]
 
 MIDDLEWARE = [
