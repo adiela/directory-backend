@@ -1,9 +1,16 @@
 from django.contrib import admin
-from api.listings.models import Category, Business, OpeningHours, Product, Review
+from django.apps import apps
 
 
-admin.site.register(Category)
-admin.site.register(Business)
-admin.site.register(OpeningHours)
-admin.site.register(Product)
-admin.site.register(Review)
+class CustomAdmin(admin.ModelAdmin):
+    readonly_fields = ['created_by', 'updated_by']
+
+
+# all models
+listings_models = apps.get_app_config('listings').get_models()
+
+for model in listings_models:
+    try:
+        admin.site.register(model, CustomAdmin)
+    except admin.sites.AlreadyRegistered:
+        pass

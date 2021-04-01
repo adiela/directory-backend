@@ -1,20 +1,20 @@
 from api.main.models import BaseModel
 from phonenumber_field.modelfields import PhoneNumberField
 from django.contrib.gis.db import models
-from django.contrib.postgres.fields import ArrayField
 from django.core.validators import MaxValueValidator
+from django.conf import settings
 
 
 class Category(BaseModel):
-    name = models.CharField(max_length=30)
+    name = models.CharField(max_length=30, unique=True)
     description = models.CharField(max_length=256)
-
-    def __str__(self):
-        return self.name
 
     class Meta:
         db_table = 'category'
         verbose_name_plural = "Categories"
+
+    def __str__(self):
+        return self.name
 
 
 class Business(BaseModel):
@@ -26,18 +26,17 @@ class Business(BaseModel):
     phone_number = PhoneNumberField()
     email = models.EmailField()
     website = models.URLField()
-    photos = ArrayField(models.CharField(max_length=256))
-
-    def __str__(self):
-        return f"{self.id} {self.name}"
 
     class Meta:
         db_table = 'business'
         verbose_name_plural = "Businesses"
 
+    def __str__(self):
+        return f"{self.id} {self.name}"
+
 
 class OpeningHours(BaseModel):
-    business = models.ForeignKey(Business, on_delete=models.CASCADE)
+    business = models.ForeignKey(Business, related_name="opening_hours", on_delete=models.CASCADE)
     day = models.PositiveSmallIntegerField(validators=[MaxValueValidator(6), ])
     opening_time = models.TimeField()
     closing_time = models.TimeField()
@@ -52,13 +51,12 @@ class Product(BaseModel):
     name = models.CharField(max_length=256)
     description = models.TextField()
     price = models.DecimalField(decimal_places=2, max_digits=11)
-    photos = ArrayField(models.CharField(max_length=256))
-
-    def __str__(self):
-        return f"{self.business.name} {self.name} product"
 
     class Meta:
         db_table = 'product'
+
+    def __str__(self):
+        return f"{self.business.name} {self.name} product"
 
 
 class Review(BaseModel):
@@ -68,3 +66,8 @@ class Review(BaseModel):
 
     class Meta:
         db_table = 'review'
+
+
+class BusinessAdmin(BaseModel):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    business = models.ForeignKey(Business, on_delete=models.CASCADE)

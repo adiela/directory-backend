@@ -19,10 +19,16 @@ from django.contrib import admin
 from django.urls import include, path
 
 from api.authentication.views import UserViewSet
+from api.listings import views as listing_views
 
 # Routers provide an easy way of automatically determining the URL conf.
 router = routers.DefaultRouter()
 router.register(r'users', UserViewSet)
+router.register(r'categories', listing_views.CategoryViewSet)
+router.register(r'businesses', listing_views.BusinessViewSet)
+router.register(r'products', listing_views.ProductViewSet)
+router.register(r'reviews', listing_views.ReviewViewSet)
+router.register(r'opening_hours', listing_views.OpeningHoursViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
