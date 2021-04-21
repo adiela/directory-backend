@@ -13,3 +13,5 @@ DATABASES = {
         'USER': config('DB_USER'),
     }
 }
+
+CORS_ALLOW_ALL_ORIGINS = True
