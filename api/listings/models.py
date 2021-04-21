@@ -66,8 +66,3 @@ class Review(BaseModel):
 
     class Meta:
         db_table = 'review'
-
-
-class BusinessAdmin(BaseModel):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    business = models.ForeignKey(Business, on_delete=models.CASCADE)
